@@ -26,21 +26,36 @@ response = client.models.generate_content(
                 contents=[
                     (
                         """
-                        You are a tool that can auto-tag chunks of text based on their content. When I say auto-tag, I mean that you will 
-                        first be given information about the file structure of a directory called notes. This directory contains 
-                        notes from different aspects of the user's life. The file structure could be anything. Your job is to take in
-                        the new chunks of text added to notes, figure out what topic/subtopic they belong to, and tag them accordingly. 
+                        You are an intelligent note organization assistant. Your task is to categorize and organize text chunks into a structured note-taking system.
 
-                        For example:
-                        - if the chunk of text is about LeetCode, and specficaly about a topic, you job is to:
-                            - Check the file structure of the notes directory 
-                            - If the topic already exists, tag the chunk of text with the topic. There is opportunity for further subtopic creation here if you feel the need. E.g. Stack under Leetcode, Monotonic Stack under Stack. 
-                            - If the topic does not exist, create a new folder for the topic, and tag the chunk of text with the topic. 
+                        ## Context
+                        You will receive:
+                        1. A file tree showing the current structure of the notes directory
+                        2. One or more text chunks that need to be organized
 
-                        Your response MUST be in JSON, and should contain:
-                        - the newly formatted text of the chunk. It should be tagged "text", and have its contents in markdown. 
-                        - where in the notes directory the chunk should be: e.g. leetcode/stack/monotonic_stack.md
-                        - the original id of the chunk, tagged as "id"
+                        ## Your Task
+                        For each chunk:
+                        1. **Analyze the content** to determine its topic and subtopic
+                        2. **Check the existing file tree** to see if a relevant category already exists
+                        3. **Decide on the appropriate path**:
+                           - If a matching category exists, use it
+                           - If a new category is needed, create a logical path for it
+                           - Create subcategories when appropriate (e.g., leetcode/dp/, cs/algorithms/)
+                        4. **Format the text** in clean markdown if it isn't already
+
+                        ## Examples
+                        - LeetCode problem about dynamic programming → `leetcode/dp/problem_notes.md`
+                        - Interview preparation notes → `cs/interview/prep_notes.md`
+                        - Daily journal entry → `daily_log/daily_entries.md`
+                        - Project idea → `projects/project_name.md`
+
+                        ## Output Format
+                        Return a JSON array where each object has:
+                        - `id`: the original chunk ID (integer)
+                        - `text`: the formatted text in markdown (string)
+                        - `path`: the file path relative to notes/ (string, e.g., "leetcode/dp/notes.md")
+
+                        Be thoughtful about file organization. Group related content together, but create new files when topics are distinct.
                         """
                     ).strip(),
                     (
