@@ -3,7 +3,7 @@ from google.genai import Client
 import os
 from dotenv import load_dotenv 
 from .parse import make_chunks, read_inbox, get_file_tree
-from .manage import apply_changes
+from .manage import apply_changes, apply_refactor
 import re
 import logging
 from pydantic import BaseModel, Field
@@ -84,12 +84,17 @@ def process_inbox(client, inbox_file, notes_dir, archive_dir):
                 )
 
     try:
-        logging.info(response.text)
-        match = re.search(r"```json\s*(.*?)\s*```", response.text, re.DOTALL)
+        # extract json from response (handles markdown code blocks)
+        match = re.search(r"```json\s*\n(.*?)\n```", response.text, re.DOTALL)
         if match:
             text = match.group(1)
         else:
-            text = response.text
+            # try without the json language specifier
+            match = re.search(r"```\s*\n(.*?)\n```", response.text, re.DOTALL)
+            if match:
+                text = match.group(1)
+            else:
+                text = response.text
 
         response_data = json.loads(text)
         if isinstance(response_data, dict):
@@ -176,7 +181,16 @@ def refactor(client, notes_dir):
     else:
         logging.info(f"Suggested {len(plan.moves)} file moves:")
         for move in plan.moves:
-            reason_str = f" ({move.reason})" if move.reason else ""
-            logging.info(f"  {move.old_path} -> {move.new_path}{reason_str}")
+            reason_str = f"{move.reason}" if move.reason else ""
+            logging.info(f"move {move.old_path} to {move.new_path}. Reason: {reason_str}")
+        # ask for approval 
+        approval = input("approve these changes? (y/n): ")
+        if approval.lower() != "y":
+            logging.info("Refactoring cancelled.")
+            return
+        
+        apply_refactor(notes_dir, plan)
+        
+        
     
     print(plan.model_dump_json(indent=2))

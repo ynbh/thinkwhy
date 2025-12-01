@@ -41,3 +41,18 @@ def apply_changes(note_dir, classified_chunks, inbox_file="inbox.txt", archive_d
         f.write("")
 
     print("New inbox created successfully.")
+
+
+def apply_refactor(note_dir, refactor_plan):
+    
+    for move in refactor_plan.moves:
+        old_path = os.path.join(note_dir, move.old_path)
+        new_path = os.path.join(note_dir, move.new_path)
+        
+        # create the directory for the new path if it doesn't exist
+        os.makedirs(os.path.dirname(new_path), exist_ok=True)
+        
+        # move the file
+        os.rename(old_path, new_path)
+
+    return 

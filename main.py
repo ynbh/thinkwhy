@@ -47,6 +47,6 @@ def refactor_notes():
 
 if __name__ == "__main__":
     cli.add_command(process, "p")
-    cli.add_command(add, "a")
     cli.add_command(refactor_notes, "r")
+    cli.add_command(add, "a")
     cli()
