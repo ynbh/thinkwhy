@@ -40,7 +40,7 @@ drop quick notes into `inbox.txt`, separated by `--`, and the system will:
 
 2. run the script:
    ```bash
-   uv run script/llm.py
+   uv run main.py
    ```
 
 3. your notes are now organized in the `notes/` directory and the inbox is archived

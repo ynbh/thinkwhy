@@ -1,5 +1,6 @@
 
 import os
+import re
 """
 parses inbox.txt, archives it, and deletes the contents of inbox.txt. 
 """
@@ -8,9 +9,6 @@ def read_inbox(file_path = "inbox.txt"):
     with open(file_path , "r") as f:
         return f.read()
 
-
-import re
-
 def make_chunks(text, delimiter):
 
     chunks = re.split(delimiter, text)
@@ -18,9 +16,7 @@ def make_chunks(text, delimiter):
 
     return [{"id": idx, "text": chunk} for idx, chunk in enumerate(cleaned)]
 
-"""
-We pass in the file tree to give the LLM context about the file structure.
-"""
+# We pass in the file tree to give the LLM context about the file structure.
 def get_file_tree(notes_dir):
     
     files = os.listdir(notes_dir)

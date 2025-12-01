@@ -1,25 +1,25 @@
 
-import os 
-
-"""
-Using the LLM response, it is now time to put the responses into folders. 
-"""
-
+import os
 import datetime
 
+
+# Using the LLM response, it is now time to put the responses into folders. 
 def manage(note_dir,  classified_chunks):
     for chunk in classified_chunks:
         path = os.path.join(note_dir, chunk["path"])
         try:
             os.makedirs(os.path.dirname(path), exist_ok=True)
             with open(path, "a") as f:
-                f.write("\n\n" + chunk["text"])
+                if f.tell() > 0:
+                    f.write("\n\n---\n\n")
+                f.write(chunk["text"])
         except Exception as e:
             print(f"Error writing to {path}: {e}")
             return False
 
     return True
 
+# clear the inbox and archive it
 def apply_changes(note_dir, classified_chunks, inbox_file="inbox.txt", archive_dir="archive"):
     print("Auto-tagging now...")
     manage(note_dir, classified_chunks)
