@@ -38,7 +38,7 @@ def add(note_text):
     logging.info(f"Added note to {INBOX_FILE}.")
 
 @cli.command(help="refactor the entire note structure")
-def refactor_notes():
+def refactor():
     """refactors the notes."""
     client = make_client()
     if not client:
@@ -50,7 +50,7 @@ def refactor_notes():
 
 @cli.command(name="browse", help="browse your notes interactively.")
 @click.option("--notes-dir", default="notes", help="directory containing notes.")
-def browse_command(notes_dir):
+def browse(notes_dir):
     """launches an interactive notes browser."""
     app = NotesBrowser(notes_dir)
     app.run()
@@ -58,7 +58,7 @@ def browse_command(notes_dir):
 
 if __name__ == "__main__":
     cli.add_command(process, "p")
-    cli.add_command(refactor_notes, "r")
+    cli.add_command(refactor, "r")
     cli.add_command(add, "a")
-    cli.add_command(browse_command, "b")
+    cli.add_command(browse, "b")
     cli()

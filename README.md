@@ -1,4 +1,4 @@
-# manage
+# think why 
 
 an intelligent note organization system powered by llms that automatically categorizes and files your notes.
 
