@@ -116,8 +116,7 @@ def process_inbox(client, inbox_file, notes_dir, archive_dir):
     except Exception as e:
         logging.error(f"An error occurred during verification: {e}")
 
-# schema for refactoring
-
+# pydantic schemas for structured llm responses
 class FileMove(BaseModel):
     old_path: str = Field(description="current file path relative to notes directory")
     new_path: str = Field(description="proposed file path relative to notes directory, must end with .md")
@@ -190,7 +189,3 @@ def refactor(client, notes_dir):
             return
         
         apply_refactor(notes_dir, plan)
-        
-        
-    
-    print(plan.model_dump_json(indent=2))

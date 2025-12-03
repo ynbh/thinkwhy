@@ -1,11 +1,12 @@
 
 import os
 import re
+
 """
-parses inbox.txt, archives it, and deletes the contents of inbox.txt. 
+this module provides functions for parsing text and file structures.
 """
 
-def read_inbox(file_path = "inbox.txt"):
+def read_inbox(file_path):
     with open(file_path , "r") as f:
         return f.read()
 
@@ -16,22 +17,22 @@ def make_chunks(text, delimiter):
 
     return [{"id": idx, "text": chunk} for idx, chunk in enumerate(cleaned)]
 
-# We pass in the file tree to give the LLM context about the file structure.
+# pass in the file tree to give the LLM context about the file structure.
 def get_file_tree(notes_dir):
     
     files = os.listdir(notes_dir)
-    ans = []
+    tree = []
 
     # this could have nested folders 
     for f in files:
         if os.path.isdir(os.path.join(notes_dir, f)):
-            ans.append({"name": f, "type": "folder", "files": []})
+            tree.append({"name": f, "type": "folder", "files": []})
             files = get_file_tree(os.path.join(notes_dir, f))
-            ans[-1]["files"] = files
+            tree[-1]["files"] = files
         else:
-            ans.append({"name": f, "type": "file"})
+            tree.append({"name": f, "type": "file"})
 
-    return ans
+    return tree
 
 if __name__ == "__main__":
     inbox = read_inbox() 

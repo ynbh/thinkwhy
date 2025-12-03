@@ -1,6 +1,9 @@
 import logging
 import click
 from script.llm import make_client, process_inbox, refactor
+from script.parse import get_file_tree
+from script.browse import browse
+import json
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -45,8 +48,19 @@ def refactor_notes():
     refactor(client, NOTES_DIR)
     logging.info("Refactoring complete.")
 
+@cli.command(help="list all notes")
+def list_notes():
+    """lists all notes."""
+
+    tree = get_file_tree(NOTES_DIR)
+    print(json.dumps(tree, indent=2))
+    
+
+
 if __name__ == "__main__":
     cli.add_command(process, "p")
     cli.add_command(refactor_notes, "r")
     cli.add_command(add, "a")
+    cli.add_command(list_notes, "l")
+    cli.add_command(browse, "b") # add the new browse command
     cli()
