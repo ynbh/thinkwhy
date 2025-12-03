@@ -3,7 +3,6 @@ from textual.widgets import Header, Footer, DirectoryTree, Markdown
 from textual.containers import Horizontal
 import os
 import click
-# removed shutil and subprocess
 
 class NotesBrowser(App):
     """textual app to browse notes."""
