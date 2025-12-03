@@ -29,8 +29,7 @@ uv run main.py <command>
 
 - `a`, `add <note>`: add a new note to `inbox.md`.
 - `p`, `process`: process the notes in `inbox.md`, categorizing and filing them into the `notes/` directory.
-- `r`, `refactor-notes`: refactor the entire note structure in `notes/`.
-- `l`, `list-notes`: list all notes in the `notes/` directory as a tree.
+- `r`, `refactor`: refactor the entire note structure in `notes/`.
 - `b`, `browse`: launch an interactive tui to browse notes.
     - split-screen view with a directory tree and a markdown viewer.
     - the markdown viewer is scrollable.
