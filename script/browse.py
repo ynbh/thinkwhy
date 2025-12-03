@@ -2,7 +2,6 @@ from textual.app import App, ComposeResult, on
 from textual.widgets import Header, Footer, DirectoryTree, Markdown
 from textual.containers import Horizontal
 import os
-import click
 
 class NotesBrowser(App):
     """textual app to browse notes."""
@@ -62,14 +61,3 @@ class NotesBrowser(App):
         """called when the user presses escape."""
         file_viewer = self.query_one("#file-view", Markdown)
         file_viewer.styles.display = "none"
-
-
-@click.command()
-@click.option("--notes-dir", default="notes", help="directory containing notes.")
-def browse(notes_dir):
-    """launches an interactive notes browser."""
-    app = NotesBrowser(notes_dir)
-    app.run()
-
-if __name__ == "__main__":
-    browse()

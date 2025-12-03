@@ -2,7 +2,7 @@ import logging
 import click
 from script.llm import make_client, process_inbox, refactor
 from script.parse import get_file_tree
-from script.browse import browse
+from script.browse import NotesBrowser
 import json
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -48,18 +48,17 @@ def refactor_notes():
     refactor(client, NOTES_DIR)
     logging.info("Refactoring complete.")
 
-@cli.command(help="browse your notes interactively.")
-def browse_notes():
-    """browses the notes interactively."""
-    browse(NOTES_DIR)
+@cli.command(name="browse", help="browse your notes interactively.")
+@click.option("--notes-dir", default="notes", help="directory containing notes.")
+def browse_command(notes_dir):
+    """launches an interactive notes browser."""
+    app = NotesBrowser(notes_dir)
+    app.run()
+
 
 if __name__ == "__main__":
     cli.add_command(process, "p")
-    cli.add_command(process, "process")
     cli.add_command(refactor_notes, "r")
-    cli.add_command(refactor_notes, "refactor")
     cli.add_command(add, "a")
-    cli.add_command(add, "add")
-    cli.add_command(browse_notes, "b")
-    cli.add_command(browse_notes, "browse")
+    cli.add_command(browse_command, "b")
     cli()
