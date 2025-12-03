@@ -4,12 +4,7 @@ an intelligent note organization system powered by llms that automatically categ
 
 ## what it does
 
-drop quick notes into `inbox.txt`, separated by `--`, and the system will:
-- analyze each note's content
-- determine the appropriate category and file path
-- format it in markdown
-- append it to the right file in your `notes/` directory
-- archive the processed inbox
+this tool provides a command-line interface to manage your notes, with features for adding, processing, refactoring, and browsing. the core feature is the ability to automatically categorize and file notes from an inbox file into a structured directory.
 
 ## setup
 
@@ -25,49 +20,47 @@ drop quick notes into `inbox.txt`, separated by `--`, and the system will:
 
 ## usage
 
-1. add notes to `inbox.txt`, separating each with `--`:
-   ```
-   solved leetcode problem 42 using monotonic stack
-   
-   --
-   
-   had a great interview prep session today
-   
-   --
-   
-   new project idea: build a cli tool for managing todos
-   ```
+the main entrypoint is `main.py`. you can run commands like this:
+```bash
+uv run main.py <command>
+```
 
-2. run the script:
+### commands
+
+- `a`, `add <note>`: add a new note to `inbox.md`.
+- `p`, `process`: process the notes in `inbox.md`, categorizing and filing them into the `notes/` directory.
+- `r`, `refactor-notes`: refactor the entire note structure in `notes/`.
+- `l`, `list-notes`: list all notes in the `notes/` directory as a tree.
+- `b`, `browse`: launch an interactive tui to browse notes.
+    - split-screen view with a directory tree and a markdown viewer.
+    - the markdown viewer is scrollable.
+    - press `escape` to close the file view.
+
+### example workflow
+
+1. add a note to your inbox:
    ```bash
-   uv run main.py
+   uv run main.py add "solved leetcode problem 42 using a monotonic stack"
    ```
-
-3. your notes are now organized in the `notes/` directory and the inbox is archived
+2. process the inbox:
+   ```bash
+   uv run main.py process
+   ```
+3. browse your organized notes:
+   ```bash
+   uv run main.py browse
+   ```
 
 ## structure
 
 ```
 manage/
-├── inbox.txt          # drop your notes here
-├── notes/             # organized notes (gitignored)
-├── archive/           # processed inboxes (gitignored)
+├── inbox.md           # drop your notes here
+├── notes/             # organized notes
+├── archive/           # processed inboxes
 └── script/
-    ├── llm.py         # main script
+    ├── llm.py         # llm-related logic
     ├── parse.py       # parsing utilities
-    └── manage.py      # file management
+    ├── manage.py      # file management
+    └── browse.py      # textual-based notes browser
 ```
-
-## features
-
-- **smart categorization**: uses gemini to understand context and organize notes
-- **append mode**: preserves existing notes, doesn't overwrite
-- **flexible delimiters**: handles `--` with or without extra spaces
-- **automatic archiving**: keeps a history of all processed inboxes
-- **error handling**: robust file operations with proper logging
-
-## notes
-
-- the `notes/` directory is gitignored by default
-- archived inboxes are timestamped for easy reference
-- the system appends to existing files, so related notes stay together
