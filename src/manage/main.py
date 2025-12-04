@@ -1,8 +1,8 @@
 import logging
 import click
-from script.llm import make_client, process_inbox, refactor
-from script.parse import get_file_tree
-from script.browse import NotesBrowser
+from .modules.llm import make_client, process_inbox, refactor
+from .modules.parse import get_file_tree
+from .modules.browse import NotesBrowser
 import json
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')

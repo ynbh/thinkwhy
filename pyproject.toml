@@ -1,7 +1,7 @@
 [project]
-name = "manage"
+name = "thinkwhy"
 version = "0.1.0"
-description = "Add your description here"
+description = "note management tool"
 readme = "README.md"
 requires-python = ">=3.13"
 license = { file = "LICENSE" }
@@ -16,3 +16,6 @@ dependencies = [
     "ruff>=0.14.7",
     "textual>=6.7.1",
 ]
+
+[project.scripts]
+manage = "manage.main:cli"

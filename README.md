@@ -20,9 +20,9 @@ this tool provides a command-line interface to manage your notes, with features 
 
 ## usage
 
-the main entrypoint is `main.py`. you can run commands like this:
+you can run the tool using the `manage` command:
 ```bash
-uv run main.py <command>
+uv run manage <command>
 ```
 
 ### commands
@@ -39,27 +39,35 @@ uv run main.py <command>
 
 1. add a note to your inbox:
    ```bash
-   uv run main.py add "solved leetcode problem 42 using a monotonic stack"
+   uv run manage add "solved leetcode problem 42 using a monotonic stack"
    ```
 2. process the inbox:
    ```bash
-   uv run main.py process
+   uv run manage process
    ```
 3. browse your organized notes:
    ```bash
-   uv run main.py browse
+   uv run manage browse
    ```
 
 ## structure
 
 ```
 manage/
-├── inbox.md           # drop your notes here
-├── notes/             # organized notes
-├── archive/           # processed inboxes
-└── script/
-    ├── llm.py         # llm-related logic
-    ├── parse.py       # parsing utilities
-    ├── manage.py      # file management
-    └── browse.py      # textual-based notes browser
+├── src/
+│   └── manage/
+│       ├── __init__.py
+│       ├── main.py
+│       └── modules/
+│           ├── __init__.py
+│           ├── browse.py
+│           ├── llm.py
+│           ├── manage.py
+│           └── parse.py
+├── tests/
+├── .gitignore
+├── .python-version
+├── pyproject.toml
+├── README.md
+└── uv.lock
 ```
