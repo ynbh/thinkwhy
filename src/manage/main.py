@@ -1,6 +1,6 @@
 import logging
 import click
-from .modules.llm import make_client, process_inbox, refactor
+from .modules.llm import make_client, process_inbox, refactor as llm_refactor
 from .modules.parse import get_file_tree
 from .modules.browse import NotesBrowser
 import json
@@ -45,7 +45,7 @@ def refactor():
         logging.error("Failed to create API client. Check your AI_API_KEY environment variable.")
         return
     logging.info("Refactoring...")
-    refactor(client, NOTES_DIR)
+    llm_refactor(client, NOTES_DIR)
     logging.info("Refactoring complete.")
 
 @cli.command(name="browse", help="browse your notes interactively.")

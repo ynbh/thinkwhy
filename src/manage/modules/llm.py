@@ -47,11 +47,14 @@ def process_inbox(client, inbox_file, notes_dir, archive_dir):
                             1. **Analyze the content** to determine its topic and subtopic.
                             2. **Check the existing file tree** to see if a relevant category already exists.
                             3. **Decide on the appropriate file path**:
-                               - If a matching category exists, use it.
-                               - If a new category is needed, create a logical path for it.
-                               - Create subcategories when appropriate (e.g., `learning/cs/algorithms/`).
-                               - The file path MUST end with `.md` (e.g., "leetcode/dp/problem_notes.md").
-                            4. **Enrich the text content**:
+                               - **Avoid Fragmentation**: Try to group related nodes into existing folders from the file tree. 
+                               - **Minimize Top-Level Sprawl**: Avoid creating new top-level folders unless the topic is fundamentally different from everything else.
+                               - **Hierarchical Thinking**: Use subfolders to group related content (e.g., instead of a top-level `algorithms`, use `cs/algorithms/`).
+                            4. **Rules for Paths**:
+                               - The file path MUST end with `.md`.
+                               - Use logical, descriptive folder names.
+                               - Check if the note fits into a broader category already present (e.g., `learning/`, `projects/`, `personal/`).
+                            5. **Enrich the text content**:
                                - Add a clear title (H1 heading) at the top if not present.
                                - Write a brief, concise summary of the note under a `## Summary` heading.
                                - Add relevant tags (e.g., `#tag1 #tag2`) at the end of the note.
@@ -130,40 +133,24 @@ def refactor(client, notes_dir):
     tree = get_file_tree(notes_dir) 
 
     prompt = """
-    you are a note organization expert. analyze the given file tree and suggest structural improvements.
+    you are a note organization expert. analyze the given file tree and suggest structural improvements to reduce "category sprawl" and fragmentation.
+
+    # goal
+    consolidate isolated top-level folders and files into a cleaner, more hierarchical structure.
 
     # rules
-    1. preserve all file and folder names exactly as they are - do not change capitalization, underscores, or naming style
-    2. only reorganize the folder structure if there are clear improvements to be made
-    3. group related files together under logical parent folders
-    4. avoid creating unnecessary nesting - keep the structure as flat as reasonable
-    5. if the current structure is already well-organized, return an empty list of moves
-    6. all file paths must end with .md
-    7. do not create generic folders like "active" or "overview" unless they already exist
+    1. PROACTIVELY suggest moving isolated top-level folders or files that contain only a few items into broader, related categories.
+    2. Group related items together under logical parent folders to reduce the total number of top-level directories.
+    3. You MAY rename folders or files if it improves clarity or organization (e.g., moving several science notes into a `science/` or `learning/science/` folder).
+    4. Avoid creating unnecessary nesting beyond 3-4 levels.
+    5. All file paths must end with .md.
 
-    # what to look for
-    - files that belong together but are scattered across different folders
-    - opportunities to create topic-based groupings (e.g., all python-related notes under learning/python/)
-    - redundant folder hierarchies that can be simplified
+    # example improvements
+    - If you see several isolated folders like `history`, `philosophy`, and `science`, consider if they belong under a common parent like `knowledge` or `learning`.
+    - If you see many top-level files, try to categorize them into existing or new logical folders.
+    - Consolidate folders that have very few files into more active or broader categories.
 
-    # output format
-    return a list of file moves. only include files that should be moved - do not include files that should stay in their current location.
-    for each move, provide:
-    - old_path: current file path
-    - new_path: proposed file path
-    - reason: brief explanation of why this improves organization (optional)
-
-    # example
-    if you see:
-    - learning/python/basics.md
-    - learning/python_advanced.md
-    
-    you might suggest:
-    - old_path: "learning/python_advanced.md"
-      new_path: "learning/python/advanced.md"
-      reason: "groups all python content together"
-
-    be conservative - only suggest changes that genuinely improve organization.
+    be proactive - suggest moves that simplify the overall structure and reduce fragmentation.
     """
 
     response = client.models.generate_content(

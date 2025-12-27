@@ -12,6 +12,7 @@ def manage(note_dir,  classified_chunks):
                 if f.tell() > 0:
                     f.write("\n\n---\n\n")
                 f.write(chunk["text"])
+            logging.info(f"Saved chunk {chunk.get('id', '?')} to {chunk['path']}")
         except Exception as e:
             logging.error(f"Error writing to {path}: {e}")
             return False
@@ -41,7 +42,6 @@ def apply_changes(note_dir, classified_chunks, inbox_file, archive_dir="archive"
 
 
 def apply_refactor(note_dir, refactor_plan):
-    
     for move in refactor_plan.moves:
         old_path = os.path.join(note_dir, move.old_path)
         new_path = os.path.join(note_dir, move.new_path)
@@ -50,6 +50,17 @@ def apply_refactor(note_dir, refactor_plan):
         os.makedirs(os.path.dirname(new_path), exist_ok=True)
         
         # move the file
-        os.rename(old_path, new_path)
+        if os.path.exists(old_path):
+            os.rename(old_path, new_path)
+            logging.info(f"Moved {move.old_path} to {move.new_path}")
+            
+            # clean up empty parent directories
+            parent = os.path.dirname(old_path)
+            while parent != note_dir and os.path.isdir(parent) and not os.listdir(parent):
+                os.rmdir(parent)
+                logging.info(f"Deleted empty directory: {os.path.relpath(parent, note_dir)}")
+                parent = os.path.dirname(parent)
+        else:
+            logging.warning(f"File not found for move: {old_path}")
 
     return 
